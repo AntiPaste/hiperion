@@ -18,9 +18,20 @@ var store = sessions.NewCookieStore(
 
 func homeHandler(w http.ResponseWriter, req *http.Request) {
 	session, _ := store.Get(req, "hiperion")
+
+	if session.IsNew {
+		session.Options.Domain = req.Host
+		session.Options.Path = "/"
+		session.Options.MaxAge = 86400
+		session.Options.HttpOnly = true
+		session.Options.Secure = true
+	}
+
 	if req.FormValue("name") != "" {
 		session.Values["name"] = req.FormValue("name")
 	}
+
+	session.Save(req, w)
 
 	homeTemplate := template.Must(template.ParseFiles("home.html"))
 	homeTemplate.Execute(w, struct {
@@ -30,8 +41,6 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 		Title: "Home",
 		Name:  session.Values["name"].(string),
 	})
-
-	session.Save(req, w)
 }
 
 func staticHandler(w http.ResponseWriter, req *http.Request) {
