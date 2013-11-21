@@ -1,0 +1,21 @@
+{{ define "title" }}Login{{ end }}
+
+{{ define "body" }}
+	{{ range .Errors }}
+	<div class="alert alert-danger">{{ . }}</div>
+	{{ end }}
+
+	<form action="/login" method="post">
+		<div class="form-group">
+			<label for="">Username</label>
+			<input type="text" name="username" class="form-control" placeholder="Username">
+		</div>
+
+		<div class="form-group">
+			<label for="">Password</label>
+			<input type="password" name="password" class="form-control" placeholder="Password">
+		</div>
+
+		<button type="submit" class="btn btn-default">Log in</button>
+	</form>
+{{ end }}

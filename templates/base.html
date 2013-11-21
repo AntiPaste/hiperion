@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Hiperion - {{.Title}}</title>
+	<title>Hiperion - {{ template "title" . }}</title>
 
 	<link href="/static/bootstrap.min.css" rel="stylesheet">
-	{{range .CSS}}
-	<link href="/static/{{.}}" rel="stylesheet">
-	{{end}}
+	{{ range .CSS }}
+	<link href="/static/{{ . }}" rel="stylesheet">
+	{{ end }}
 
 	<script src="/static/bootstrap.min.js"></script>
-	{{range .JS}}
-	<script src="/static/{{.}}"></script>
-	{{end}}
+	{{ range .JS }}
+	<script src="/static/{{ . }}"></script>
+	{{ end }}
 </head>
 
 <body>
-	{{template "body" .}}
+	{{ template "body" . }}
 </body>
 </html>

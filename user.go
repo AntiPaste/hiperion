@@ -31,3 +31,11 @@ func getUser(identifier int) (User, error) {
 
 	return user, nil
 }
+
+func handleLogin(input map[string][]string) error {
+	if input["username"] == "test" && input["password"] == "1234" {
+		return nil
+	}
+
+	return fmt.Errorf("Invalid username or password!")
+}

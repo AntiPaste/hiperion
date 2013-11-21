@@ -35,21 +35,57 @@ func getSession(req *http.Request) *sessions.Session {
 }
 
 func homeHandler(w http.ResponseWriter, req *http.Request) {
+	session := getSession(req)
+	if session.Values["userID"] == nil {
+		http.Redirect(w, req, "/login", http.StatusSeeOther)
+		return
+	}
+
 	homeTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/index.html"))
 	homeTemplate.Execute(w, struct {
-		Title string
 		CSS   []string
 		JS    []string
 	}{
-		Title: "Home",
-		CSS:   []string{},
-		JS:    []string{},
+		CSS: []string{},
+		JS:  []string{},
+	})
+}
+
+func loginHandler(w http.ResponseWriter, req *http.Request) {
+	session := getSession(req)
+	if session.Values["userID"] != nil {
+		http.Redirect(w, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	if req.Method == "POST" {
+		err := handleLogin(req.PostForm)
+		if err != nil {
+			session.AddFlash(err, "errors")
+			http.Redirect(w, req, "/login", http.StatusSeeOther)
+			return
+		}
+
+		http.Redirect(w, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	loginTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/login.html"))
+	loginTemplate.Execute(w, struct {
+		CSS      []string
+		JS       []string
+		Errors   []string
+	}{
+		CSS: []string{},
+		JS:  []string{},
+		Errors   session.Flashes("errors"),
 	})
 }
 
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", homeHandler)
+	router.HandleFunc("/login", loginHandler)
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
 
 	conn, err := redis.Dial("tcp", "127.0.0.1:6379")
