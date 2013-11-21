@@ -14,7 +14,11 @@ type User struct {
 }
 
 func hashPassword(password string, salt string) string {
-	byteHash := scrypt.Key([]byte(password), append([]byte(PASSWORD_SALT), []byte(salt)...), 16384, 8, 1, 32)
+	byteHash, err := scrypt.Key([]byte(password), append([]byte(PASSWORD_SALT), []byte(salt)...), 16384, 8, 1, 32)
+	if err != nil {
+		log.Fatal("hashPassword:", err)
+	}
+
 	hash := hex.EncodeToString(byteHash)
 	return hash
 }
@@ -63,7 +67,11 @@ func handleLogin(username, password string) error {
 	user, _ := getUser(userID)
 	hash := hashPassword(password, user.Salt)
 
-	isValid := db.Cmd("SISMEMBER", "hashes", hash).Bool()
+	isValid, err := db.Cmd("SISMEMBER", "hashes", hash).Bool()
+	if err != nil {
+		log.Fatal("handleLogin:", err)
+	}
+
 	if isValid {
 		return nil
 	}
