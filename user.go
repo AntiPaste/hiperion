@@ -20,7 +20,7 @@ type User struct {
 
 func hashUsername(username string) string {
 	hasher := md5.New()
-	hasher.Write([]byte("Haydenish"))
+	hasher.Write([]byte(username))
 	hash := hex.EncodeToString(hasher.Sum(nil))
 
 	return hash
@@ -145,8 +145,6 @@ func handleRegistration(session *sessions.Session, username, password, verifyPas
 
 	salt := hex.EncodeToString(byteSalt)
 	hash := hashPassword(password, salt)
-
-	log.Println(fmt.Sprintf("username:%s", strings.ToLower(hashUsername(username))))
 
 	db.Cmd("SET", fmt.Sprintf("username:%s", strings.ToLower(hashUsername(username))), nextID)
 	db.Cmd("HMSET", fmt.Sprintf("user:%d", nextID), "id", nextID, "username", username, "salt", salt)
