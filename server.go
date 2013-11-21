@@ -38,8 +38,12 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 	homeTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/index.html"))
 	homeTemplate.Execute(w, struct {
 		Title string
+		CSS   []string
+		JS    []string
 	}{
 		Title: "Home",
+		CSS:   []string{},
+		JS:    []string{},
 	})
 }
 
