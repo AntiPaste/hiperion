@@ -45,16 +45,17 @@ func getUser(identifier int) (User, error) {
 func getUserID(username string) (int, error) {
 	log.Println(fmt.Sprintf("username:%s", username))
 
-	data, err := db.Cmd("GET", fmt.Sprintf("username:%s", username)).List()
+	reply := db.Cmd("GET", fmt.Sprintf("username:%s", username))
+	if reply.Type == redis.NilReply {
+		return -1, fmt.Errorf("getUserID: user not found")
+	}
+
+	data, err := reply.Str()
 	if err != nil {
 		log.Fatal("getUserID:", err)
 	}
 
-	if len(data) == 0 {
-		return -1, fmt.Errorf("getUserID: user not found")
-	}
-
-	userID := stringToInt(data[0])
+	userID := stringToInt(data)
 	return userID, nil
 }
 
