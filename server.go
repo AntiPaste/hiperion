@@ -35,9 +35,9 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 		session.Values["name"] = req.FormValue("name")
 	}
 
-	err := session.Save(req, w)
-	if err != nil {
-		log.Fatal("session:", err)
+	sErr := session.Save(req, w)
+	if sErr != nil {
+		log.Fatal("session:", sErr)
 	}
 
 	homeTemplate := template.Must(template.ParseFiles("home.html"))
