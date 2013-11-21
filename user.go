@@ -32,8 +32,8 @@ func getUser(identifier int) (User, error) {
 	return user, nil
 }
 
-func handleLogin(input map[string][]string) error {
-	if input["username"] == "test" && input["password"] == "1234" {
+func handleLogin(username, password string) error {
+	if username == "test" && password == "1234" {
 		return nil
 	}
 

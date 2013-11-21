@@ -59,7 +59,10 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if req.Method == "POST" {
-		err := handleLogin(req.PostForm)
+		username := req.PostFormValue("username")
+		password := req.PostFormValue("password")
+		err := handleLogin(username, password)
+
 		if err != nil {
 			session.AddFlash(err, "errors")
 			http.Redirect(w, req, "/login", http.StatusSeeOther)
@@ -74,7 +77,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	loginTemplate.Execute(w, struct {
 		CSS    []string
 		JS     []string
-		Errors []string
+		Errors []interface{}
 	}{
 		CSS:    []string{},
 		JS:     []string{},
