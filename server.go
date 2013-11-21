@@ -24,7 +24,7 @@ func getSession(req *http.Request) *sessions.Session {
 	}
 
 	if session.IsNew {
-		session.Options.Domain = req.Host
+		session.Options.Domain = "kun.nolla.us"
 		session.Options.Path = "/"
 		session.Options.MaxAge = 86400 * 30
 		session.Options.HttpOnly = false
