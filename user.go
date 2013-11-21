@@ -20,11 +20,7 @@ type User struct {
 func hashUsername(username string) string {
 	hasher := md5.New()
 	hasher.Write([]byte("Haydenish"))
-
-	hash, err := hex.EncodeToString(hasher.Sum(nil))
-	if err != nil {
-		log.Fatal("hashUsername:", err)
-	}
+	hash := hex.EncodeToString(hasher.Sum(nil))
 
 	return hash
 }
