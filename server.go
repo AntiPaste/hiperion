@@ -3,8 +3,8 @@ package main
 import (
 	//"fmt"
 	"github.com/fzzy/radix/redis"
-	"github.com/gorilla/sessions"
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 	"html/template"
 	"log"
 	"net/http"
@@ -26,7 +26,7 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 	homeTemplate.Execute(w, struct {
 		Name string
 	}{
-		Name: session.Values["name"]
+		Name: session.Values["name"],
 	})
 }
 
