@@ -2,16 +2,31 @@ package main
 
 import (
 	"code.google.com/p/go.crypto/scrypt"
+	"crypto/md5"
 	"encoding/hex"
 	"fmt"
 	"github.com/fzzy/radix/redis"
+	"github.com/gorilla/sessions"
 	"log"
+	"strings"
 )
 
 type User struct {
 	ID       int
 	Username string
 	Salt     string
+}
+
+func hashUsername(username string) string {
+	hasher := md5.New()
+	hasher.Write([]byte("Haydenish"))
+
+	hash, err := hex.EncodeToString(hasher.Sum(nil))
+	if err != nil {
+		log.Fatal("hashUsername:", err)
+	}
+
+	return hash
 }
 
 func hashPassword(password string, salt string) string {
@@ -49,6 +64,8 @@ func getUser(identifier int) (User, error) {
 }
 
 func getUserID(username string) (int, error) {
+	username = strings.ToLower(hashUsername(username))
+
 	reply := db.Cmd("GET", fmt.Sprintf("username:%s", username))
 	if reply.Type == redis.NilReply {
 		return -1, fmt.Errorf("getUserID: user not found")
@@ -63,7 +80,7 @@ func getUserID(username string) (int, error) {
 	return userID, nil
 }
 
-func handleLogin(username, password string) error {
+func handleLogin(session *sessions.Session, username, password string) error {
 	invalid := fmt.Errorf("Invalid username or password!")
 
 	userID, err := getUserID(username)
@@ -73,9 +90,6 @@ func handleLogin(username, password string) error {
 
 	user, _ := getUser(userID)
 	hash := hashPassword(password, user.Salt)
-	log.Println(password)
-	log.Println(user.Salt)
-	log.Println(hash)
 
 	isValid, err := db.Cmd("SISMEMBER", "hashes", hash).Bool()
 	if err != nil {
@@ -83,6 +97,7 @@ func handleLogin(username, password string) error {
 	}
 
 	if isValid {
+		session.Values["userID"] = user.ID
 		return nil
 	}
 

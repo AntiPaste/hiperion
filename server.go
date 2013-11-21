@@ -59,7 +59,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "POST" {
 		username := req.PostFormValue("username")
 		password := req.PostFormValue("password")
-		err := handleLogin(username, password)
+		err := handleLogin(session, username, password)
 
 		if err != nil {
 			session.AddFlash(err.Error(), "errors")
@@ -69,6 +69,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		session.Save(req, w)
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
