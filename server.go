@@ -24,9 +24,11 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	homeTemplate := template.Must(template.ParseFiles("home.html"))
 	homeTemplate.Execute(w, struct {
-		Name string
+		Title string
+		Name  string
 	}{
-		Name: session.Values["name"].(string),
+		Title: "Home",
+		Name:  session.Values["name"].(string),
 	})
 }
 
