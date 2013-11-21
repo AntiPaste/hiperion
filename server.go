@@ -26,8 +26,8 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 	if session.IsNew {
 		session.Options.Domain = req.Host
 		session.Options.Path = "/"
-		session.Options.MaxAge = 86400
-		session.Options.HttpOnly = false
+		session.Options.MaxAge = 86400 * 30
+		session.Options.HttpOnly = true
 		session.Options.Secure = true
 	}
 
@@ -35,10 +35,7 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 		session.Values["name"] = req.FormValue("name")
 	}
 
-	sErr := session.Save(req, w)
-	if sErr != nil {
-		log.Fatal("session:", sErr)
-	}
+	session.Save(req, w)
 
 	homeTemplate := template.Must(template.ParseFiles("home.html"))
 	homeTemplate.Execute(w, struct {
@@ -50,19 +47,10 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 	})
 }
 
-func staticHandler(w http.ResponseWriter, req *http.Request) {
-	if req.Method != "GET" {
-		http.Error(w, "Invalid method", 405)
-	}
-
-	log.Println(req.URL.Path[1:])
-	http.ServeFile(w, req, req.URL.Path[1:])
-}
-
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", homeHandler)
-	router.HandleFunc("/static/", staticHandler)
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 
 	conn, err := redis.Dial("tcp", "127.0.0.1:6379")
 	if err != nil {

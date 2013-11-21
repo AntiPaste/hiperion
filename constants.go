@@ -2,6 +2,6 @@ package main
 
 const (
 	DATABASE_INDEX         = 1
-	SESSION_AUTHENTICATION = "\u00f8\u0089\u0031\u0020\u007c\u00bb\u0023\u00eb\u0075\u0070\u002a\u0035\u00b8\u00f9\u005c\u00d3\u00ef\u0001\u0041\u006a\u00f8\u00b1\u0063\u004d\u005d\u002f\u0011\u00f1\u009d\u00e9\u0074\u00b0"
-	SESSION_ENCRYPTION     = "\u0089\u00e9\u006f\u00cf\u0003\u00ad\u007b\u00f5\u0077\u00a7\u00e2\u00dc\u00b4\u001c\u00c6\u0025\u00f9\u006e\u000f\u00f5\u0095\u00ba\u0013\u000b\u00fc\u00e2\u00bd\u00e7\u007b\u008a\u00af\u0031"
+	SESSION_AUTHENTICATION = "\xf8\x89\x31\x20\x7c\xbb\x23\xeb\x75\x70\x2a\x35\xb8\xf9\x5c\xd3\xef\x01\x41\x6a\xf8\xb1\x63\x4d\x5d\x2f\x11\xf1\x9d\xe9\x74\xb0"
+	SESSION_ENCRYPTION     = "\x89\xe9\x6f\xcf\x03\xad\x7b\xf5\x77\xa7\xe2\xdc\xb4\x1c\xc6\x25\xf9\x6e\x0f\xf5\x95\xba\x13\x0b\xfc\xe2\xbd\xe7\x7b\x8a\xaf\x31"
 )
