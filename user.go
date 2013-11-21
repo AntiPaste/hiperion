@@ -104,7 +104,7 @@ func handleLogin(session *sessions.Session, username, password string) error {
 func handleRegistration(session *sessions.Session, username, password, verifyPassword string) []error {
 	var errors []error
 	if username == "" {
-		errors = append(errors, "Please enter a username.")
+		errors = append(errors, fmt.Errorf("Please enter a username."))
 	} else {
 		usernameExists, err := db.Cmd("EXISTS", fmt.Sprintf("username:%s", username)).Bool()
 		if err != nil {
@@ -112,20 +112,20 @@ func handleRegistration(session *sessions.Session, username, password, verifyPas
 		}
 
 		if usernameExists {
-			errors = append(errors, "That username has already been taken!")
+			errors = append(errors, fmt.Errorf("That username has already been taken!"))
 		}
 	}
 
 	if password == "" {
-		errors = append(errors, "Please enter a password.")
+		errors = append(errors, fmt.Errorf("Please enter a password."))
 	}
 
 	if verifyPassword == "" {
-		errors = append(errors, "Please enter your password again to avoid mistakes.")
+		errors = append(errors, fmt.Errorf("Please enter your password again to avoid mistakes."))
 	}
 
 	if password != verifyPassword {
-		errors = append(errors, "Passwords do not match!")
+		errors = append(errors, fmt.Errorf("Passwords do not match!"))
 	}
 
 	if len(errors) > 0 {
