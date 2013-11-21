@@ -148,9 +148,9 @@ func handleRegistration(session *sessions.Session, username, password, verifyPas
 
 	log.Println(fmt.Sprintf("username:%s", strings.ToLower(hashUsername(username))))
 
-	_, err := db.Cmd("SET", fmt.Sprintf("username:%s", strings.ToLower(hashUsername(username))), nextID)
+	err := db.Cmd("SET", fmt.Sprintf("username:%s", strings.ToLower(hashUsername(username))), nextID)
 	if err != nil {
-		log.Fatal("handleRegistration:", err)
+		log.Fatal(err)
 	}
 
 	db.Cmd("HMSET", fmt.Sprintf("user:%d", nextID), "id", nextID, "username", username, "salt", salt)
