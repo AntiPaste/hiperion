@@ -12,19 +12,22 @@ import (
 
 var db *redis.Client
 var store = sessions.NewCookieStore(
-	[]byte(SESSION_AUTHENTICATION),
-	[]byte(SESSION_ENCRYPTION),
+	SESSION_AUTHENTICATION,
+	SESSION_ENCRYPTION,
 )
 
 func homeHandler(w http.ResponseWriter, req *http.Request) {
-	session, _ := store.Get(req, "hiperion")
+	session, err := store.Get(req, "hiperion")
+
+	if err != nil {
+		log.Fatal("session:", err)
+	}
 
 	if session.IsNew {
-		log.Println(req.Host)
 		session.Options.Domain = req.Host
 		session.Options.Path = "/"
 		session.Options.MaxAge = 86400
-		session.Options.HttpOnly = true
+		session.Options.HttpOnly = false
 		session.Options.Secure = true
 	}
 
@@ -32,7 +35,7 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 		session.Values["name"] = req.FormValue("name")
 	}
 
-	session.Save(req, w)
+	sessions.Save(req, w)
 
 	homeTemplate := template.Must(template.ParseFiles("home.html"))
 	homeTemplate.Execute(w, struct {
