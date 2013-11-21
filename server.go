@@ -23,13 +23,11 @@ func getSession(req *http.Request) *sessions.Session {
 		log.Fatal("getSession:", err)
 	}
 
-	if session.IsNew {
-		session.Options.Domain = "kun.nolla.us"
-		session.Options.Path = "/"
-		session.Options.MaxAge = 86400 * 30
-		session.Options.HttpOnly = false
-		session.Options.Secure = false
-	}
+	session.Options.Domain = req.Host
+	session.Options.Path = "/"
+	session.Options.MaxAge = 86400 * 30
+	session.Options.HttpOnly = false
+	session.Options.Secure = false
 
 	return session
 }
