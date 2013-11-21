@@ -63,11 +63,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 
 		if err != nil {
 			session.AddFlash(err.Error(), "errors")
-			session.AddFlash("test", "errors")
-			x := session.Save(req, w)
-			if x != nil {
-				log.Println(x)
-			}
+			session.Save(req, w)
 
 			http.Redirect(w, req, "/login", http.StatusSeeOther)
 			return
@@ -77,13 +73,8 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	c := session.Save(req, w)
-	if c != nil {
-		log.Println(c)
-	}
-
 	errors := session.Flashes("errors")
-	log.Println(errors)
+	session.Save(req, w)
 
 	loginTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/login.html"))
 	loginTemplate.Execute(w, struct {

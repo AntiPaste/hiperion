@@ -1,15 +1,22 @@
 package main
 
 import (
+	"code.google.com/p/go.crypto/scrypt"
+	"encoding/hex"
 	"fmt"
 	"log"
 )
 
 type User struct {
-	id       int
-	username string
-	hash     string
-	salt     string
+	ID       int
+	Username string
+	Salt     string
+}
+
+func hashPassword(password string, salt string) string {
+	byteHash := scrypt.Key([]byte(password), append([]byte(PASSWORD_SALT), []byte(salt)...), 16384, 8, 1, 32)
+	hash := hex.EncodeToString(byteHash)
+	return hash
 }
 
 func getUser(identifier int) (User, error) {
@@ -23,19 +30,43 @@ func getUser(identifier int) (User, error) {
 	}
 
 	user := User{
-		id:       stringToInt(data["id"]),
-		username: data["username"],
-		hash:     data["hash"],
-		salt:     data["salt"],
+		ID:       stringToInt(data["id"]),
+		Username: data["username"],
+		Salt:     data["salt"],
 	}
 
 	return user, nil
 }
 
+func getUserID(username string) (int, error) {
+	data, err := db.Cmd("GET", fmt.Sprintf("username:%d", username)).Str()
+	if err != nil {
+		log.Fatal("getUserID:", err)
+	}
+
+	if data == "" {
+		return -1, fmt.Errorf("getUserID: user not found")
+	}
+
+	userID := stringToInt(data)
+	return userID, nil
+}
+
 func handleLogin(username, password string) error {
-	if username == "test" && password == "1234" {
+	invalid := fmt.Errorf("Invalid username or password!")
+
+	userID, err := getUserID(username)
+	if err != nil {
+		return invalid
+	}
+
+	user, _ := getUser(userID)
+	hash := hashPassword(password, user.Salt)
+
+	isValid := db.Cmd("SISMEMBER", "hashes", hash).Bool()
+	if isValid {
 		return nil
 	}
 
-	return fmt.Errorf("Invalid username or password!")
+	return invalid
 }
