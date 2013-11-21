@@ -20,8 +20,8 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 	session, _ := store.Get(req, "hiperion")
 	if req.FormValue("name") != "" {
 		session.Values["name"] = req.FormValue("name")
-		session.Save(req, w)
 	}
+
 	homeTemplate := template.Must(template.ParseFiles("home.html"))
 	homeTemplate.Execute(w, struct {
 		Title string
@@ -30,6 +30,8 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 		Title: "Home",
 		Name:  session.Values["name"].(string),
 	})
+
+	session.Save(req, w)
 }
 
 func staticHandler(w http.ResponseWriter, req *http.Request) {
@@ -37,6 +39,7 @@ func staticHandler(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Invalid method", 405)
 	}
 
+	log.Println(req.URL.Path[1:])
 	http.ServeFile(w, req, req.URL.Path[1:])
 }
 
