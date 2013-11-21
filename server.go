@@ -17,7 +17,7 @@ var store = sessions.NewCookieStore(
 )
 
 func homeHandler(w http.ResponseWriter, req *http.Request) {
-	session, _ = store.Get(req, "hiperion")
+	session, _ := store.Get(req, "hiperion")
 	if req.FormValue("name") != "" {
 		session.Values["name"] = req.FormValue("name")
 		session.Save(req, w)
