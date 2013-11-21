@@ -79,6 +79,11 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	c := session.Save(req, w)
+	if c != nil {
+		log.Println(c)
+	}
+
 	errors := session.Flashes("errors")
 	log.Println(errors)
 
