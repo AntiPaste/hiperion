@@ -20,6 +20,7 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 	session, _ := store.Get(req, "hiperion")
 
 	if session.IsNew {
+		log.Println(req.Host)
 		session.Options.Domain = req.Host
 		session.Options.Path = "/"
 		session.Options.MaxAge = 86400
@@ -67,7 +68,7 @@ func main() {
 
 	log.Println("Server started!")
 
-	if err := http.ListenAndServe(":1234", router); err != nil {
+	if err := http.ListenAndServe(":80", router); err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
 }
