@@ -4,6 +4,7 @@ import (
 	"code.google.com/p/go.crypto/scrypt"
 	"encoding/hex"
 	"fmt"
+	"github.com/fzzy/radix/redis"
 	"log"
 )
 
