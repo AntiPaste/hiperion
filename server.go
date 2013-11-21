@@ -30,7 +30,7 @@ func main() {
 	}
 
 	db = conn
-	db.Cmd("SELECT", config.DATABASE_INDEX)
+	db.Cmd("SELECT", DATABASE_INDEX)
 
 	log.Println("Server started!")
 
