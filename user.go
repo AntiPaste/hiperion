@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 )
 
 type User struct {
@@ -17,6 +18,10 @@ func getUser(identifier int) (User, error) {
 		log.Fatal("getUser:", err)
 	}
 
+	if len(data) == 0 {
+		return nil, errors.New("getUser: user not found")
+	}
+
 	user := User{
 		id:       stringToInt(data["id"]),
 		username: data["username"],
@@ -24,5 +29,5 @@ func getUser(identifier int) (User, error) {
 		salt:     data["salt"],
 	}
 
-	return user
+	return user, nil
 }

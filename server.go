@@ -16,7 +16,7 @@ var store = sessions.NewCookieStore(
 	[]byte(SESSION_ENCRYPTION),
 )
 
-func getSession(req *http.Request) *Session {
+func getSession(req *http.Request) *sessions.Session {
 	session, err := store.Get(req, "session")
 
 	if err != nil {
