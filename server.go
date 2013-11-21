@@ -64,7 +64,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		err := handleLogin(username, password)
 
 		if err != nil {
-			session.AddFlash(err, "errors")
+			session.AddFlash(err.Error(), "errors")
 			session.AddFlash("test", "errors")
 			x := session.Save(req, w)
 			if x != nil {
