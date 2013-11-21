@@ -45,16 +45,16 @@ func getUser(identifier int) (User, error) {
 func getUserID(username string) (int, error) {
 	log.Println(fmt.Sprintf("username:%s", username))
 
-	data, err := db.Cmd("GET", fmt.Sprintf("username:%s", username)).Str()
+	data, err := db.Cmd("GET", fmt.Sprintf("username:%s", username)).List()
 	if err != nil {
 		log.Fatal("getUserID:", err)
 	}
 
-	if data == "" {
+	if len(data) == 0 {
 		return -1, fmt.Errorf("getUserID: user not found")
 	}
 
-	userID := stringToInt(data)
+	userID := stringToInt(data[0])
 	return userID, nil
 }
 
