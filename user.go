@@ -19,7 +19,7 @@ func getUser(identifier int) (User, error) {
 	}
 
 	if len(data) == 0 {
-		return nil, errors.New("getUser: user not found")
+		return User{}, fmt.Errorf("getUser: user not found")
 	}
 
 	user := User{
