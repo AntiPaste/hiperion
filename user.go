@@ -3,6 +3,7 @@ package main
 import (
 	"code.google.com/p/go.crypto/scrypt"
 	"crypto/md5"
+	"crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"github.com/fzzy/radix/redis"
@@ -100,12 +101,16 @@ func handleLogin(session *sessions.Session, username, password string) error {
 	return invalid
 }
 
-func handleRegistration(session *sessions.Session, username, password, verifyPassword string) []error {
-	var errors []error
+func handleRegistration(session *sessions.Session, username, password, verifyPassword string) []string {
+	var errors []string
 	if username == "" {
 		errors.append("Please enter a username.")
 	} else {
-		usernameExists := db.Cmd("EXISTS", fmt.Sprintf("username:%s", username)).Bool()
+		usernameExists, err := db.Cmd("EXISTS", fmt.Sprintf("username:%s", username)).Bool()
+		if err != nil {
+			log.Fatal("handleRegistration:", err)
+		}
+
 		if usernameExists {
 			errors.append("That username has already been taken!")
 		}

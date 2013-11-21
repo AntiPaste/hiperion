@@ -65,7 +65,7 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 
 		if len(err) > 0 {
 			for value := range err {
-				session.AddFlash(value.Error(), "errors")
+				session.AddFlash(value, "errors")
 			}
 
 			session.Save(req, w)
