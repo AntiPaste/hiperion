@@ -64,7 +64,7 @@ func registerHandler(w http.ResponseWriter, req *http.Request) {
 		err := handleRegistration(session, username, password, verifyPassword)
 
 		if len(err) > 0 {
-			for value := range err {
+			for i, value := range err {
 				session.AddFlash(value.Error(), "errors")
 			}
 
