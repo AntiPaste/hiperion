@@ -44,8 +44,8 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 		CSS []string
 		JS  []string
 	}{
-		CSS: []string{},
-		JS:  []string{},
+		CSS: []string{"home.css"},
+		JS:  []string{"home.js"},
 	})
 }
 

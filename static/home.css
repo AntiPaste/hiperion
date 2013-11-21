@@ -1,0 +1,15 @@
+#resources {
+
+}
+
+#resources div[class |= "resource-"] {
+	float: left;
+}
+
+#resources div[class |= "icon-"] {
+
+}
+
+#resources div[class |= "value-"] {
+
+}
