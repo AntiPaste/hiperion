@@ -12,8 +12,8 @@ import (
 
 var db *redis.Client
 var store = sessions.NewCookieStore(
-	SESSION_AUTHENTICATION,
-	SESSION_ENCRYPTION,
+	[]byte(SESSION_AUTHENTICATION),
+	[]byte(SESSION_ENCRYPTION),
 )
 
 func homeHandler(w http.ResponseWriter, req *http.Request) {
