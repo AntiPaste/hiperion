@@ -38,8 +38,9 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 	session := getSession(req)
 	if session.Values["userID"] == nil {
 		http.Redirect(w, req, "/login", http.StatusSeeOther)
-		return
 	}
+
+	session.save(req, w)
 
 	homeTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/index.html"))
 	homeTemplate.Execute(w, struct {
@@ -55,7 +56,6 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	session := getSession(req)
 	if session.Values["userID"] != nil {
 		http.Redirect(w, req, "/", http.StatusSeeOther)
-		return
 	}
 
 	if req.Method == "POST" {
@@ -67,13 +67,14 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 			session.AddFlash(err, "errors")
 			session.AddFlash("test", "errors")
 			session.Save(req, w)
+
 			http.Redirect(w, req, "/login", http.StatusSeeOther)
-			return
 		}
 
 		http.Redirect(w, req, "/", http.StatusSeeOther)
-		return
 	}
+
+	session.save(req, w)
 
 	errors := session.Flashes("errors")
 	log.Println(errors)
