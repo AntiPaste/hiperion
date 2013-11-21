@@ -1,9 +1,5 @@
 package main
 
-import (
-	"encoding/hex"
-)
-
 const (
 	DATABASE_INDEX         = 1
 	SESSION_AUTHENTICATION = "\u00f8\u0089\u0031\u0020\u007c\u00bb\u0023\u00eb\u0075\u0070\u002a\u0035\u00b8\u00f9\u005c\u00d3\u00ef\u0001\u0041\u006a\u00f8\u00b1\u0063\u004d\u005d\u002f\u0011\u00f1\u009d\u00e9\u0074\u00b0"

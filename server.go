@@ -26,7 +26,7 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 	homeTemplate.Execute(w, struct {
 		Name string
 	}{
-		Name: session.Values["name"],
+		Name: session.Values["name"].(string),
 	})
 }
 
