@@ -35,7 +35,10 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 		session.Values["name"] = req.FormValue("name")
 	}
 
-	sessions.Save(req, w)
+	err := session.Save(req, w)
+	if err != nil {
+		log.Fatal("session:", err)
+	}
 
 	homeTemplate := template.Must(template.ParseFiles("home.html"))
 	homeTemplate.Execute(w, struct {
