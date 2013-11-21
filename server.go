@@ -142,6 +142,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", homeHandler)
 	router.HandleFunc("/login", loginHandler)
+	router.HandleFunc("/register", registerHandler)
 	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
 
 	conn, err := redis.Dial("tcp", "127.0.0.1:6379")
