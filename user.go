@@ -106,7 +106,7 @@ func handleRegistration(session *sessions.Session, username, password, verifyPas
 	if username == "" {
 		errors = append(errors, fmt.Errorf("Please enter a username."))
 	} else {
-		usernameExists, err := db.Cmd("EXISTS", fmt.Sprintf("username:%s", username)).Bool()
+		usernameExists, err := db.Cmd("EXISTS", fmt.Sprintf("username:%s", strings.ToLower(hashUsername(username)))).Bool()
 		if err != nil {
 			log.Fatal("handleRegistration:", err)
 		}
