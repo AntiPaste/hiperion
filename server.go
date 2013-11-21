@@ -25,7 +25,7 @@ func getSession(req *http.Request) *sessions.Session {
 
 	if session.IsNew {
 		session.Options.Domain = req.Host
-		session.Options.Path = "/login"
+		session.Options.Path = "/"
 		session.Options.MaxAge = 86400 * 30
 		session.Options.HttpOnly = false
 		session.Options.Secure = false
