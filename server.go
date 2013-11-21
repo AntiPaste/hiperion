@@ -43,8 +43,8 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 
 	homeTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/index.html"))
 	homeTemplate.Execute(w, struct {
-		CSS   []string
-		JS    []string
+		CSS []string
+		JS  []string
 	}{
 		CSS: []string{},
 		JS:  []string{},
@@ -70,17 +70,15 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	errors := session.Flashes("errors")
-
 	loginTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/login.html"))
 	loginTemplate.Execute(w, struct {
-		CSS      []string
-		JS       []string
-		Errors   []string
+		CSS    []string
+		JS     []string
+		Errors []string
 	}{
-		CSS: []string{},
-		JS:  []string{},
-		Errors   errors,
+		CSS:    []string{},
+		JS:     []string{},
+		Errors: session.Flashes("errors"),
 	})
 }
 
