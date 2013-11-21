@@ -65,6 +65,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 
 		if err != nil {
 			session.AddFlash(err, "errors")
+			log.Println(err)
 			http.Redirect(w, req, "/login", http.StatusSeeOther)
 			return
 		}
@@ -72,6 +73,9 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
+
+	errors := session.Flashes("errors")
+	fmt.Println(errors)
 
 	loginTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/login.html"))
 	loginTemplate.Execute(w, struct {
@@ -81,7 +85,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	}{
 		CSS:    []string{},
 		JS:     []string{},
-		Errors: session.Flashes("errors"),
+		Errors: errors,
 	})
 }
 
