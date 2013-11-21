@@ -2,13 +2,13 @@ package main
 
 import (
 	//"fmt"
-	//"github.com/fzzy/radix/redis"
+	"github.com/fzzy/radix/redis"
+	"github.com/gorilla/mux"
 	"html/template"
 	"log"
-	"net/http"
 )
 
-//var db *redis.Client
+var db *redis.Client
 
 func homeHandler(c http.ResponseWriter, req *http.Request) {
 	homeTemplate := template.Must(template.ParseFiles("home.html"))
@@ -20,15 +20,17 @@ func staticHandler(c http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/", homeHandler)
-	http.HandleFunc("/static/", staticHandler)
+	router := mux.NewRouter()
+	router.HandleFunc("/", homeHandler)
+	router.HandleFunc("/static/", staticHandler).Methods("GET")
 
-	/*conn, err := redis.Dial("tcp", "127.0.0.1:6379")
+	conn, err := redis.Dial("tcp", "127.0.0.1:6379")
 	if err != nil {
 		log.Fatal("redis:", err)
 	}
 
-	db = conn*/
+	db = conn
+	db.Cmd("SELECT", config.DATABASE_INDEX)
 
 	log.Println("Server started!")
 
