@@ -99,3 +99,52 @@ func handleLogin(session *sessions.Session, username, password string) error {
 
 	return invalid
 }
+
+func handleRegistration(session *sessions.Session, username, password, verifyPassword string) []error {
+	var errors []error
+	if username == "" {
+		errors.append("Please enter a username.")
+	} else {
+		usernameExists := db.Cmd("EXISTS", fmt.Sprintf("username:%s", username)).Bool()
+		if usernameExists {
+			errors.append("That username has already been taken!")
+		}
+	}
+
+	if password == "" {
+		errors.append("Please enter a password.")
+	}
+
+	if verifyPassword == "" {
+		errors.append("Please enter your password again to avoid mistakes.")
+	}
+
+	if password != verifyPassword {
+		errors.append("Passwords do not match!")
+	}
+
+	if len(errors) > 0 {
+		return errors
+	}
+
+	nextID, err := db.Cmd("GET", "nextid").Int()
+	if err != nil {
+		log.Fatal("handleRegistration:", err)
+	}
+
+	byteSalt := make([]byte, 16)
+	n, err := rand.Read(byteSalt)
+	if err != nil {
+		log.Fatal("handleRegistration:", err)
+	}
+
+	salt := hex.EncodeToString(byteSalt)
+	hash := hashPassword(password, salt)
+
+	db.Cmd("SET", fmt.Sprintf("username:%s", strings.ToLower(hashUsername(username))), nextID)
+	db.Cmd("HMSET", fmt.Sprintf("user:%d", nextID), "id", nextID, "username", username, "salt", salt)
+	db.Cmd("SADD", "hashes", hash)
+	db.Cmd("INCR", "nextid")
+
+	return errors
+}

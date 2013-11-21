@@ -49,6 +49,52 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 	})
 }
 
+func registerHandler(w http.ResponseWriter, req *http.Request) {
+	session := getSession(req)
+	if session.Values["userID"] != nil {
+		http.Redirect(w, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	if req.Method == "POST" {
+		username := req.PostFormValue("username")
+		password := req.PostFormValue("password")
+		verifyPassword := req.PostFormValue("verify-password")
+
+		err := handleRegistration(session, username, password, verifyPassword)
+
+		if len(err) > 0 {
+			for value := range err {
+				session.AddFlash(value.Error(), "errors")
+			}
+
+			session.Save(req, w)
+			http.Redirect(w, req, "/register", http.StatusSeeOther)
+			return
+		}
+
+		session.AddFlash("Registration successful! You may login now.", "messages")
+		session.Save(req, w)
+
+		http.Redirect(w, req, "/", http.StatusSeeOther)
+		return
+	}
+
+	errors := session.Flashes("errors")
+	session.Save(req, w)
+
+	loginTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/register.html"))
+	loginTemplate.Execute(w, struct {
+		CSS    []string
+		JS     []string
+		Errors []interface{}
+	}{
+		CSS:    []string{},
+		JS:     []string{},
+		Errors: errors,
+	})
+}
+
 func loginHandler(w http.ResponseWriter, req *http.Request) {
 	session := getSession(req)
 	if session.Values["userID"] != nil {
@@ -74,18 +120,21 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	messages := session.Flashes("messages")
 	errors := session.Flashes("errors")
 	session.Save(req, w)
 
 	loginTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/login.html"))
 	loginTemplate.Execute(w, struct {
-		CSS    []string
-		JS     []string
-		Errors []interface{}
+		CSS      []string
+		JS       []string
+		Messages []interface{}
+		Errors   []interface{}
 	}{
-		CSS:    []string{},
-		JS:     []string{},
-		Errors: errors,
+		CSS:      []string{},
+		JS:       []string{},
+		Messages: messages,
+		Errors:   errors,
 	})
 }
 

@@ -1,15 +1,11 @@
-{{ define "title" }}Login{{ end }}
+{{ define "title" }}Register{{ end }}
 
 {{ define "body" }}
-	{{ range .Messages }}
-	<div class="alert alert-success">{{ . }}</div>
-	{{ end }}
-
 	{{ range .Errors }}
 	<div class="alert alert-danger">{{ . }}</div>
 	{{ end }}
 
-	<form action="/login" method="post">
+	<form action="/register" method="post">
 		<div class="form-group">
 			<label for="">Username</label>
 			<input type="text" name="username" class="form-control" placeholder="Username">
@@ -20,6 +16,11 @@
 			<input type="password" name="password" class="form-control" placeholder="Password">
 		</div>
 
-		<button type="submit" class="btn btn-default">Log in</button>
+		<div class="form-group">
+			<label for="">Verify password</label>
+			<input type="password" name="verify-password" class="form-control" placeholder="Verify password">
+		</div>
+
+		<button type="submit" class="btn btn-default">Register</button>
 	</form>
 {{ end }}
