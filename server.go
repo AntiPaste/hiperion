@@ -16,11 +16,11 @@ var store = sessions.NewCookieStore(
 	[]byte(SESSION_ENCRYPTION),
 )
 
-func homeHandler(w http.ResponseWriter, req *http.Request) {
-	session, err := store.Get(req, "hiperion")
+func getSession(req *http.Request) *Session {
+	session, err := store.Get(req, "session")
 
 	if err != nil {
-		log.Fatal("session:", err)
+		log.Fatal("getSession:", err)
 	}
 
 	if session.IsNew {
@@ -31,30 +31,26 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 		session.Options.Secure = true
 	}
 
-	if req.FormValue("name") != "" {
-		session.Values["name"] = req.FormValue("name")
-	}
+	return session
+}
 
-	session.Save(req, w)
-
-	homeTemplate := template.Must(template.ParseFiles("home.html"))
+func homeHandler(w http.ResponseWriter, req *http.Request) {
+	homeTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/index.html"))
 	homeTemplate.Execute(w, struct {
 		Title string
-		Name  string
 	}{
 		Title: "Home",
-		Name:  session.Values["name"].(string),
 	})
 }
 
 func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/", homeHandler)
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
 
 	conn, err := redis.Dial("tcp", "127.0.0.1:6379")
 	if err != nil {
-		log.Fatal("redis:", err)
+		log.Fatal("connect:", err)
 	}
 
 	db = conn

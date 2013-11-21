@@ -5,11 +5,17 @@
 	<title>Hiperion - {{.Title}}</title>
 
 	<link href="/static/bootstrap.min.css" rel="stylesheet">
+	{{range .CSS}}
+	<link href="/static/{{.}}" rel="stylesheet">
+	{{end}}
+
 	<script src="/static/bootstrap.min.js"></script>
+	{{range .JS}}
+	<script src="/static/{{.}}"></script>
+	{{end}}
 </head>
 
 <body>
-	<p>Welcome to Hiperion, {{.Name}}!</p>
-	<p>Powered by <a href="#">Go</a> and <a href="#">GitHub</a>!</p>
+	{{template "body" .}}
 </body>
 </html>
