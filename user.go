@@ -15,7 +15,12 @@ type User struct {
 }
 
 func hashPassword(password string, salt string) string {
-	byteHash, err := scrypt.Key([]byte(password), append([]byte(PASSWORD_SALT), []byte(salt)...), 16384, 8, 1, 32)
+	byteSalt, err := hex.DecodeString(salt)
+	if err != nil {
+		log.Fatal("hashPassword:", err)
+	}
+
+	byteHash, err := scrypt.Key([]byte(password), append([]byte(PASSWORD_SALT), byteSalt...), 16384, 8, 1, 32)
 	if err != nil {
 		log.Fatal("hashPassword:", err)
 	}
@@ -44,8 +49,6 @@ func getUser(identifier int) (User, error) {
 }
 
 func getUserID(username string) (int, error) {
-	log.Println(fmt.Sprintf("username:%s", username))
-
 	reply := db.Cmd("GET", fmt.Sprintf("username:%s", username))
 	if reply.Type == redis.NilReply {
 		return -1, fmt.Errorf("getUserID: user not found")
