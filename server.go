@@ -75,7 +75,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	}
 
 	errors := session.Flashes("errors")
-	fmt.Println(errors)
+	log.Println(errors)
 
 	loginTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/login.html"))
 	loginTemplate.Execute(w, struct {
