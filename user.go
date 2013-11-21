@@ -43,7 +43,7 @@ func getUser(identifier int) (User, error) {
 }
 
 func getUserID(username string) (int, error) {
-	data, err := db.Cmd("GET", fmt.Sprintf("username:%d", username)).Str()
+	data, err := db.Cmd("GET", fmt.Sprintf("username:%s", username)).Str()
 	if err != nil {
 		log.Fatal("getUserID:", err)
 	}
