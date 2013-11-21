@@ -70,6 +70,8 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	errors := session.Flashes("errors")
+
 	loginTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/login.html"))
 	loginTemplate.Execute(w, struct {
 		CSS      []string
@@ -78,7 +80,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 	}{
 		CSS: []string{},
 		JS:  []string{},
-		Errors   session.Flashes("errors"),
+		Errors   errors,
 	})
 }
 
