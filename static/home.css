@@ -2,14 +2,14 @@
 
 }
 
-#resources div[class |= "resource-"] {
+#resources div[class ^= "resource-"] {
 	float: left;
 }
 
-#resources div[class |= "icon-"] {
+#resources div[class ^= "icon-"] {
 
 }
 
-#resources div[class |= "value-"] {
+#resources div[class ^= "value-"] {
 
 }
