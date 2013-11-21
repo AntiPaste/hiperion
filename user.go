@@ -138,7 +138,7 @@ func handleRegistration(session *sessions.Session, username, password, verifyPas
 	}
 
 	byteSalt := make([]byte, 16)
-	_, err := rand.Read(byteSalt)
+	err = rand.Read(byteSalt)
 	if err != nil {
 		log.Fatal("handleRegistration:", err)
 	}
