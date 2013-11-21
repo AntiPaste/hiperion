@@ -54,7 +54,7 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 func loginHandler(w http.ResponseWriter, req *http.Request) {
 	session := getSession(req)
 	if session.Values["userID"] != nil {
-		http.Redirect(w, req, "/", http.StatusFound)
+		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
 
@@ -66,13 +66,16 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		if err != nil {
 			session.AddFlash(err, "errors")
 			session.AddFlash("test", "errors")
-			session.Save(req, w)
+			x := session.Save(req, w)
+			if x != nil {
+				log.Println(x)
+			}
 
-			http.Redirect(w, req, "/login", http.StatusFound)
+			http.Redirect(w, req, "/login", http.StatusSeeOther)
 			return
 		}
 
-		http.Redirect(w, req, "/", http.StatusFound)
+		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
 
