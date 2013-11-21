@@ -40,7 +40,7 @@ func homeHandler(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/login", http.StatusSeeOther)
 	}
 
-	session.save(req, w)
+	session.Save(req, w)
 
 	homeTemplate := template.Must(template.ParseFiles("templates/base.html", "templates/index.html"))
 	homeTemplate.Execute(w, struct {
@@ -74,7 +74,7 @@ func loginHandler(w http.ResponseWriter, req *http.Request) {
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 	}
 
-	session.save(req, w)
+	session.Save(req, w)
 
 	errors := session.Flashes("errors")
 	log.Println(errors)
