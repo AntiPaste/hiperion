@@ -73,6 +73,9 @@ func handleLogin(username, password string) error {
 
 	user, _ := getUser(userID)
 	hash := hashPassword(password, user.Salt)
+	log.Println(password)
+	log.Println(user.Salt)
+	log.Println(hash)
 
 	isValid, err := db.Cmd("SISMEMBER", "hashes", hash).Bool()
 	if err != nil {
